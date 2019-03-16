@@ -1,0 +1,46 @@
+version: '2'
+services:
+  web:
+    ports:
+      - "3000:3000"
+      - "9229:9229"
+    build: .
+    command: bash -c "nodemon --inspect=0.0.0.0:9229 --optimize_for_size --max_old_space_size=920  server.js"
+    env_file: .env
+    depends_on:
+      - kafka
+      - db
+      - redis
+    volumes:
+      - .:/app/user
+  db:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: example
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+  zookeeper:
+    image: wurstmeister/zookeeper
+    ports:
+      - "2181:2181"
+    hostname: zookeeper
+  kafka:
+    image: wurstmeister/kafka
+    command: [start-kafka.sh]
+    ports:
+      - "9092:9092"
+    hostname: kafka
+    environment:
+      KAFKA_CREATE_TOPICS:  "campaign:1:1,linkAudience:1:1,buildAudience:1:1" # topic:partition:replicas
+      KAFKA_ADVERTISED_HOST_NAME: kafka # docker-machine ip
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_PORT: 9092
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - "zookeeper"
