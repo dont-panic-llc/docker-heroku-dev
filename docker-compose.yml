@@ -5,7 +5,7 @@ services:
       - "3000:3000"
       - "9229:9229"
     build: .
-    command: bash -c "nodemon --inspect=0.0.0.0:9229 --optimize_for_size --max_old_space_size=920  server.js"
+    command: bash -c "nodemon --inspect=0.0.0.0:9229 --optimize_for_size --max_old_space_size=920  server.js --legacy-watch"
     env_file: .env
     depends_on:
       - kafka
@@ -13,6 +13,7 @@ services:
       - redis
     volumes:
       - .:/app/user
+      - /app/user/node_modules
   db:
     image: postgres:latest
     restart: always

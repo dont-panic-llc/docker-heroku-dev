@@ -1,8 +1,12 @@
+const log = require('pino')({ 
+  level: 'info',
+  prettyPrint: true
+})
 const fastify = require('fastify')({
-  logger: true
+  logger: log
 })
 
-fastify.register(require('fastify-redis'), process.env.REDIS_URL )
+// fastify.register(require('fastify-redis'), process.env.REDIS_URL )
 
 fastify.get('/', async (request, reply) => {
   return {
@@ -18,7 +22,7 @@ const start = async () => {
   try {
     await fastify.listen(process.env.PORT, '0.0.0.0')
   } catch (err) {
-    fastify.log.error(err)
+    log.error(err)
     process.exit(1)
   }
 }

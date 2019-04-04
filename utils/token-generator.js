@@ -9,12 +9,11 @@ const signConfig = () => ({
   subject: '',
   expiresIn: process.env.JWT_EXPIRY * 60 * 60, // expiresIn is expected in hours
   notBefore: 0,
-  jwtid: jwtId
+  jwtid: jwtId,
 })
 
-
 const generateToken = async () => {
-  const secret = process.env.JWT_SECRET || createHash('sha256').digest('hex');
+  const secret = process.env.JWT_SECRET || createHash('sha256').digest('hex')
   try {
     const token = await sign({}, secret, signConfig())
     console.log(token)
@@ -23,12 +22,10 @@ const generateToken = async () => {
     console.log(process.env.JWT_EXPIRY * 60 * 60)
     console.log(jwtId)
     return { token }
-  } catch(e) {
+  } catch (e) {
     console.error(e)
   }
-  return
 }
-
 
 const start = async () => {
   await generateToken()

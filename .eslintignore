@@ -1,0 +1,4 @@
+/db/*
+/test/*
+/contrib/*
+jest.config.js
